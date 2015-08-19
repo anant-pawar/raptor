@@ -1,0 +1,30 @@
+{
+  "clusterKey":"a455a4d2-9f61-47e8-a2b1-14e0bc9ed779",
+  "nodes":[
+    {
+      "verticle": "com.worker.DataProcessor",
+      "instance": 1,
+      "setting": {
+        "id": "P1",
+        "receiveFrom": ["R1"],
+        "sendTo": ["W1"]
+      }
+    },
+    {
+      "verticle":"com.worker.DataWriter",
+      "instance":1,
+      "setting":{
+        "id":"W1",
+        "receiveFrom":["P1"]
+      }
+    },
+    {
+      "verticle":"com.worker.DataReader",
+      "instance":1,
+      "setting":{
+        "id":"R1",
+        "sendTo":["P1"]
+      }
+    }
+  ]
+}
