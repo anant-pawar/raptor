@@ -9,20 +9,15 @@ import java.util.ArrayList;
  */
 public class Setting {
     private String id;
-    private ArrayList<String> sendTo;
-    private ArrayList<String> receiveFrom;
     private Object config;
+    private Routes routes;
 
     public String getId() {
         return id;
     }
 
-    public ArrayList<String> getSendTo() {
-        return sendTo;
-    }
-
-    public ArrayList<String> getReceiveFrom() {
-        return receiveFrom;
+    public Routes getRoutes() {
+        return routes;
     }
 
     public Object getConfig() {

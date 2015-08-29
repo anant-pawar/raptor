@@ -8,7 +8,12 @@ import io.vertx.core.json.JsonObject;
 public class Node {
     private String verticle;
     private Integer instance;
+    private Boolean worker;
     private Object setting;
+
+    public Boolean getIsWorker() {
+        return worker;
+    }
 
     public String getVerticle() {
         return verticle;

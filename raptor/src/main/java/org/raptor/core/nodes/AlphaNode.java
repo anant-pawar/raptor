@@ -31,6 +31,7 @@ public class AlphaNode extends AbstractVerticle {
             for (Node node : cluster.getNodes()) {
                 DeploymentOptions deploymentOptions = new DeploymentOptions();
                 deploymentOptions.setInstances(node.getInstance());
+                deploymentOptions.setWorker(node.getIsWorker());
                 deploymentOptions.setConfig(
                         new JsonObject(
                                 json.getJsonString(
@@ -38,11 +39,12 @@ public class AlphaNode extends AbstractVerticle {
                 
                 vertx.deployVerticle(node.getVerticle(), deploymentOptions);
 
+                // temporary
                 Thread.sleep(1000);
             }
 
         } catch (Exception exception) {
-
+            exception.printStackTrace();
         }
     }
 }

@@ -4,26 +4,31 @@
     {
       "verticle": "com.worker.DataProcessor",
       "instance": 1,
+      "worker": true,
       "setting": {
         "id": "P1",
-        "receiveFrom": ["R1"],
-        "sendTo": ["W1"]
+        "routes": {
+          "send":["W1"]
+        }
       }
     },
     {
       "verticle":"com.worker.DataWriter",
       "instance":1,
+      "worker": true,
       "setting":{
-        "id":"W1",
-        "receiveFrom":["P1"]
+        "id":"W1"
       }
     },
     {
       "verticle":"com.worker.DataReader",
       "instance":1,
+      "worker": true,
       "setting":{
         "id":"R1",
-        "sendTo":["P1"]
+        "routes":{
+          "send":["P1"]
+        }
       }
     }
   ]
