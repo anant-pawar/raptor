@@ -8,9 +8,8 @@ public abstract class AbstractReaderNode extends AbstractWorkerNode{
     public void start()
     {
         this.init();
-        System.out.print(setting.getId());
+        logger.info(setting.getId());
         this.read();
-
     }
 
     public abstract void read();

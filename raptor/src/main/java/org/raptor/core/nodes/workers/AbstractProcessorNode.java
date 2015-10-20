@@ -9,7 +9,10 @@ public abstract class AbstractProcessorNode extends AbstractWorkerNode {
     public void start()
     {
         this.init();
-        System.out.print(setting.getId());
+
+        // log start
+        logger.info(setting.getId());
+
         this.read();
     }
 
