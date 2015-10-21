@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.climactic</groupId>
-    <artifactId>climactic</artifactId>
+    <artifactId>raptor</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>raptor</module>
+        <module>raptor-core</module>
         <module>raptor-test</module>
         <module>raptor-ui</module>
     </modules>
