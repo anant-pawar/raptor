@@ -27,20 +27,56 @@ public class Starter {
         });
 
         // route for css files
-        router.route("/bootstrap/css/:stylesheet").handler(routingContext -> {
+        router.route("/lib/bootstrap/css/:stylesheet").handler(routingContext -> {
             routingContext
                     .response()
-                    .sendFile("web/bootstrap/css/" + routingContext
+                    .sendFile("web/lib/bootstrap/css/" + routingContext
+                            .request()
+                            .params()
+                            .get("stylesheet"));
+        });
+
+        router.route("/css/:stylesheet").handler(routingContext -> {
+            routingContext
+                    .response()
+                    .sendFile("web/css/" + routingContext
                             .request()
                             .params()
                             .get("stylesheet"));
         });
 
         // route for js files
-        router.route("/bootstrap/js/:javascript").handler(routingContext -> {
+        router.route("/lib/bootstrap/js/:javascript").handler(routingContext -> {
             routingContext
                     .response()
-                    .sendFile("web/bootstrap/js/" + routingContext
+                    .sendFile("web/lib/bootstrap/js/" + routingContext
+                            .request()
+                            .params()
+                            .get("javascript"));
+        });
+
+        router.route("/lib/jquery/:javascript").handler(routingContext -> {
+            routingContext
+                    .response()
+                    .sendFile("web/lib/jquery/" + routingContext
+                            .request()
+                            .params()
+                            .get("javascript"));
+        });
+
+        router.route("/lib/html5shiv/:javascript").handler(routingContext -> {
+            routingContext
+                    .response()
+                    .sendFile("web/lib/html5shiv/" + routingContext
+                            .request()
+                            .params()
+                            .get("javascript"));
+        });
+
+        router.route("/lib/respond/:javascript").handler(routingContext -> {
+            routingContext
+                    .response()
+                    .sendFile("web/lib/respond/" + routingContext
                             .request()
                             .params()
                             .get("javascript"));
