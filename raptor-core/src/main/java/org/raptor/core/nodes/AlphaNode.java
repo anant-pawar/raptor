@@ -3,7 +3,6 @@ package org.raptor.core.nodes;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.shareddata.SharedData;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Cluster;
@@ -45,7 +44,7 @@ public class AlphaNode extends AbstractVerticle {
                         new JsonObject(
                                 json.getJsonString(
                                         node)));
-                
+
                 vertx.deployVerticle(node.getVerticle(), deploymentOptions);
 
                 // temporary

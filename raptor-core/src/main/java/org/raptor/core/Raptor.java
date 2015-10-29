@@ -24,8 +24,7 @@ public class Raptor {
 
             // spawn the alpha verticle
             vertx.deployVerticle("org.raptor.core.nodes.AlphaNode", deploymentOptions);
-        }catch (Exception exception)
-        {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }

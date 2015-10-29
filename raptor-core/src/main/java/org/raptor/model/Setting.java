@@ -1,9 +1,5 @@
 package org.raptor.model;
 
-import io.vertx.core.json.JsonObject;
-
-import java.util.ArrayList;
-
 /**
  * Created by Anant on 17-07-2015.
  */

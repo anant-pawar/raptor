@@ -5,5 +5,6 @@ package org.raptor.json;
  */
 public interface IJSON {
     public <T> T getInstance(String jsonString, Class<T> type);
+
     public <T> String getJsonString(T object);
 }

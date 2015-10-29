@@ -11,6 +11,6 @@ public class DataWriter extends AbstractWriterNode {
 
     @Override
     public void write(Message message) {
-        System.out.println((String)message.body());
+        System.out.println((String) message.body());
     }
 }

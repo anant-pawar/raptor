@@ -6,10 +6,10 @@ import io.vertx.core.eventbus.Message;
  * Created by Anant on 11-07-2015.
  */
 public abstract class AbstractWriterNode extends AbstractWorkerNode {
-    public void start()
-    {
+    public void start() {
         this.init();
-        ;logger.info(setting.getId());
+        ;
+        logger.info(setting.getId());
         this.read();
 
     }

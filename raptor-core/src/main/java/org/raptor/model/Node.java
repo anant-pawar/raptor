@@ -1,7 +1,5 @@
 package org.raptor.model;
 
-import io.vertx.core.json.JsonObject;
-
 /**
  * Created by Anant on 21-07-2015.
  */

@@ -8,13 +8,11 @@ import io.vertx.ext.web.Router;
 public class RouteConfig {
     private Router router;
 
-    public RouteConfig(Router router)
-    {
+    public RouteConfig(Router router) {
         this.router = router;
     }
 
-    public void initRoutes()
-    {
+    public void initRoutes() {
         router.route("/").handler(routingContext -> {
             routingContext
                     .response()

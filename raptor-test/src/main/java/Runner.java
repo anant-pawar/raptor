@@ -8,8 +8,7 @@ import java.io.FileReader;
  * Created by Anant on 11-07-2015.
  */
 public class Runner {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(args[0]));
             String reader;
@@ -23,8 +22,7 @@ public class Runner {
 
             Raptor raptor = new Raptor();
             raptor.run(result);
-        }catch (Exception exception)
-        {
+        } catch (Exception exception) {
 
         }
     }

@@ -8,14 +8,13 @@ import setup.RouteConfig;
  */
 
 public class Starter {
-    public  static void main(String[] args){
+    public static void main(String[] args) {
         Starter starter = new Starter();
 
         starter.start();
     }
 
-    public void start()
-    {
+    public void start() {
         Vertx vertx = Vertx.vertx();
         Router router = Router.router(vertx);
         RouteConfig routeConfig = new RouteConfig(router);

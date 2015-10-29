@@ -14,23 +14,19 @@ import org.raptor.model.Setting;
  * Created by Anant on 19-08-2015.
  */
 public class AbstractWorkerNode extends AbstractVerticle {
+    protected static Logger logger;
     private final Integer PING_TIME = 1000;
     private final String PING_BUS = "PING_BUS";
-
+    public JsonObject config;
     protected IJSON json;
     protected Node node;
     protected Setting setting;
-    protected static Logger logger;
 
-    public JsonObject config;
-
-    public AbstractWorkerNode()
-    {
+    public AbstractWorkerNode() {
         json = new GsonJSONImpl();
     }
 
-    public void init()
-    {
+    public void init() {
         // read settings
         node = json.getInstance(
                 vertx

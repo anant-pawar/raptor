@@ -1,6 +1,5 @@
 package com.worker;
 
-import io.vertx.core.eventbus.Message;
 import org.raptor.core.nodes.workers.AbstractReaderNode;
 
 /**
