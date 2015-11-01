@@ -7,22 +7,23 @@ import setup.RouteConfig;
  * Created by Anant on 22-10-2015.
  */
 
-public class Starter {
-    public static void main(String[] args) {
-        Starter starter = new Starter();
+public class RaptorUI {
+    private Vertx vertx;
+    private String uiBus;
 
-        starter.start();
+    public RaptorUI(Vertx vertx, String uiBus)
+    {
+        this.vertx = vertx;
+        this.uiBus = uiBus;
     }
 
     public void start() {
-        Vertx vertx = Vertx.vertx();
         Router router = Router.router(vertx);
         RouteConfig routeConfig = new RouteConfig(router);
 
         routeConfig.initRoutes();
-        HttpServer httpServer = vertx.createHttpServer();
 
-        httpServer
+        vertx.createHttpServer()
                 .requestHandler(router::accept)
                 .listen(8080);
     }
