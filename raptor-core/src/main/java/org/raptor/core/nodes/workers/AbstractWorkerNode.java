@@ -7,7 +7,10 @@ import io.vertx.core.logging.LoggerFactory;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Node;
+import org.raptor.model.ServerInfo;
 import org.raptor.model.Setting;
+
+import java.net.InetAddress;
 
 
 /**
@@ -27,27 +30,40 @@ public class AbstractWorkerNode extends AbstractVerticle {
     }
 
     public void init() {
-        // read settings
-        node = json.getInstance(
-                vertx
-                        .getOrCreateContext()
-                        .config()
-                        .toString()
-                , Node.class);
+        try {
+            // read node information
+            node = json.getInstance(
+                    vertx
+                            .getOrCreateContext()
+                            .config()
+                            .toString()
+                    , Node.class);
 
-        setting = json.getInstance(
-                node.getSetting().toString(), Setting.class);
+            // get host name and host ip
+            node
+                    .setServerInfo(new ServerInfo(
+                            InetAddress.getLocalHost().getHostName(),
+                            InetAddress.getLocalHost().getHostAddress()
+                    ));
 
-        // get configuration information
-        config = new JsonObject(
-                json.getJsonString(
-                        setting.getConfig()));
+            // read setting information
+            setting = json.getInstance(
+                    node.getSetting().toString(), Setting.class);
 
-        // configure ping bus
-        vertx.setPeriodic(PING_TIME, id -> {
-            vertx.eventBus().publish(PING_BUS, json.getJsonString(node));
-        });
+            // get configuration information
+            config = new JsonObject(
+                    json.getJsonString(
+                            setting.getConfig()));
 
-        logger = LoggerFactory.getLogger(this.getClass().getName());
+            // configure ping bus
+            vertx.setPeriodic(PING_TIME, id -> {
+                vertx.eventBus().publish(PING_BUS, json.getJsonString(node));
+            });
+
+            logger = LoggerFactory.getLogger(this.getClass().getName());
+        }catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
     }
 }

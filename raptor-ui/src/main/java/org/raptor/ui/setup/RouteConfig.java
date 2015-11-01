@@ -1,4 +1,4 @@
-package setup;
+package org.raptor.ui.setup;
 
 import io.vertx.ext.web.Router;
 

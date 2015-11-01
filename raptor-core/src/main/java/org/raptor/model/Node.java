@@ -9,6 +9,16 @@ public class Node {
     private Boolean worker;
     private Object setting;
 
+    private ServerInfo serverInfo;
+
+    public ServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    public void setServerInfo(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
+
     public Boolean getIsWorker() {
         return worker;
     }

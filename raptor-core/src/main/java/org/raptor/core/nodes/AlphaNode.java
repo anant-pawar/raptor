@@ -3,11 +3,11 @@ package org.raptor.core.nodes;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import org.raptor.core.Raptor;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Cluster;
 import org.raptor.model.Node;
+import org.raptor.ui.RaptorUI;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class AlphaNode extends AbstractVerticle {
     private final String PING_BUS = "PING_BUS";
     private List<Node> nodes;
     private IJSON json;
+    private RaptorUI raptorUI;
 
     public AlphaNode() {
         json = new GsonJSONImpl();
@@ -25,8 +26,12 @@ public class AlphaNode extends AbstractVerticle {
 
     public void start() {
         try {
+
+            raptorUI = new RaptorUI(vertx, this.deploymentID());
+            raptorUI.start();
+
             vertx.eventBus().consumer(PING_BUS, message -> {
-                System.out.println(message.body().toString());
+                vertx.eventBus().send(this.deploymentID(), message.body());
             });
 
             // get cluster config details

@@ -1,7 +1,8 @@
+package org.raptor.ui;
+
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
-import setup.RouteConfig;
+import org.raptor.ui.setup.RouteConfig;
 
 /**
  * Created by Anant on 22-10-2015.
@@ -22,6 +23,10 @@ public class RaptorUI {
         RouteConfig routeConfig = new RouteConfig(router);
 
         routeConfig.initRoutes();
+
+        vertx.eventBus().consumer(uiBus, message -> {
+            System.out.println(message.body().toString());
+        });
 
         vertx.createHttpServer()
                 .requestHandler(router::accept)
