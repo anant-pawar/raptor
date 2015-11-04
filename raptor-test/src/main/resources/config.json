@@ -1,7 +1,8 @@
 {
   "clusterKey": "a455a4d2-9f61-47e8-a2b1-14e0bc9ed779",
-  "nodes": [
+  "workerNodes": [
     {
+      "name":"Processor",
       "verticle": "com.worker.DataProcessor",
       "instance": 1,
       "worker": true,
@@ -13,6 +14,7 @@
       }
     },
     {
+      "name":"Writer",
       "verticle": "com.worker.DataWriter",
       "instance": 1,
       "worker": true,
@@ -21,6 +23,7 @@
       }
     },
     {
+      "name":"Reader",
       "verticle": "com.worker.DataReader",
       "instance": 1,
       "worker": true,

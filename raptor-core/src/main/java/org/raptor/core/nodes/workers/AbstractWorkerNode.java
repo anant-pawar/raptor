@@ -6,8 +6,9 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
-import org.raptor.model.Node;
-import org.raptor.model.ServerInfo;
+import org.raptor.model.Ping;
+import org.raptor.model.WorkerNode;
+import org.raptor.model.ServerDetails;
 import org.raptor.model.Setting;
 
 import java.net.InetAddress;
@@ -22,8 +23,9 @@ public class AbstractWorkerNode extends AbstractVerticle {
     private final String PING_BUS = "PING_BUS";
     public JsonObject config;
     protected IJSON json;
-    protected Node node;
+    protected WorkerNode workerNode;
     protected Setting setting;
+    protected ServerDetails serverDetails;
 
     public AbstractWorkerNode() {
         json = new GsonJSONImpl();
@@ -31,24 +33,26 @@ public class AbstractWorkerNode extends AbstractVerticle {
 
     public void init() {
         try {
-            // read node information
-            node = json.getInstance(
+            // read workerNode information
+            workerNode = json.getInstance(
                     vertx
                             .getOrCreateContext()
                             .config()
                             .toString()
-                    , Node.class);
+                    , WorkerNode.class);
+
+            //set deployment id
+            workerNode.setDeploymentId(this.deploymentID());
 
             // get host name and host ip
-            node
-                    .setServerInfo(new ServerInfo(
-                            InetAddress.getLocalHost().getHostName(),
-                            InetAddress.getLocalHost().getHostAddress()
-                    ));
+            serverDetails = new ServerDetails(
+                    InetAddress.getLocalHost().getHostName(),
+                    InetAddress.getLocalHost().getHostAddress()
+            );
 
             // read setting information
             setting = json.getInstance(
-                    node.getSetting().toString(), Setting.class);
+                    workerNode.getSetting().toString(), Setting.class);
 
             // get configuration information
             config = new JsonObject(
@@ -57,7 +61,7 @@ public class AbstractWorkerNode extends AbstractVerticle {
 
             // configure ping bus
             vertx.setPeriodic(PING_TIME, id -> {
-                vertx.eventBus().publish(PING_BUS, json.getJsonString(node));
+                vertx.eventBus().publish(PING_BUS, json.getJsonString(new Ping(workerNode, serverDetails)));
             });
 
             logger = LoggerFactory.getLogger(this.getClass().getName());

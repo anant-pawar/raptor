@@ -7,13 +7,13 @@ import java.util.List;
  */
 public class Cluster {
     private String clusterKey;
-    private List<Node> nodes;
+    private List<WorkerNode> workerNodes;
 
     public String getClusterKey() {
         return clusterKey;
     }
 
-    public List<Node> getNodes() {
-        return nodes;
+    public List<WorkerNode> getWorkerNodes() {
+        return workerNodes;
     }
 }

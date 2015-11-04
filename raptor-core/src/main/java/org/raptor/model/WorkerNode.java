@@ -1,22 +1,24 @@
 package org.raptor.model;
 
+import org.raptor.model.marker.INode;
+
 /**
  * Created by Anant on 21-07-2015.
  */
-public class Node {
+public class WorkerNode implements INode {
+    private String name;
+    private String deploymentId;
     private String verticle;
     private Integer instance;
     private Boolean worker;
     private Object setting;
 
-    private ServerInfo serverInfo;
-
-    public ServerInfo getServerInfo() {
-        return serverInfo;
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
-    public void setServerInfo(ServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
     }
 
     public Boolean getIsWorker() {

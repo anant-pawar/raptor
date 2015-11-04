@@ -6,7 +6,8 @@ import io.vertx.core.json.JsonObject;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Cluster;
-import org.raptor.model.Node;
+import org.raptor.model.Ping;
+import org.raptor.model.WorkerNode;
 import org.raptor.ui.RaptorUI;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class AlphaNode extends AbstractVerticle {
     private final String PING_BUS = "PING_BUS";
-    private List<Node> nodes;
+    private List<WorkerNode> workerNodes;
     private IJSON json;
     private RaptorUI raptorUI;
 
@@ -42,16 +43,16 @@ public class AlphaNode extends AbstractVerticle {
                             .toString()
                     , Cluster.class);
 
-            for (Node node : cluster.getNodes()) {
+            for (WorkerNode workerNode : cluster.getWorkerNodes()) {
                 DeploymentOptions deploymentOptions = new DeploymentOptions();
-                deploymentOptions.setInstances(node.getInstance());
-                deploymentOptions.setWorker(node.getIsWorker());
+                deploymentOptions.setInstances(workerNode.getInstance());
+                deploymentOptions.setWorker(workerNode.getIsWorker());
                 deploymentOptions.setConfig(
                         new JsonObject(
                                 json.getJsonString(
-                                        node)));
+                                        workerNode)));
 
-                vertx.deployVerticle(node.getVerticle(), deploymentOptions);
+                vertx.deployVerticle(workerNode.getVerticle(), deploymentOptions);
 
                 // temporary
                 Thread.sleep(1000);
