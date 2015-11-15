@@ -1,19 +1,3 @@
 language: java
 jdk:
   - oraclejdk8
-
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "oO3dv7gwSOZFxeBOsGN6b2BIE5r4koHGaPY8KuZWJeTWF8ic5pOk2dc+YhmcqFB4u1jkF99oVjS3Fp4IEMtSnWVBUNV4Ig12RajGcGWsnbzYYwymVemOZelLxiZcP+Xh5v+7cPS2XRzB5kKHGDrF7GLs9JFXaLSR9pI4Vzk/soy+jPBu0EsKTRmh+tWY/63sPNior00+mCf0qOfPGfJF/+C34rY7/ZVUt7npepaa5EzXh+zGxU0cbgxQdSijQJH5j8wJMqF49vBnjAjttddvRb4wizXMy8FxENYjPikDZZGQiAbyH2rc0cHcrn26plngXMRrvF86jcFXJFNMx3t2BW3SD5+mxFrVXV+41IBBfNFTw0oNZtp2Ug5i99/2OWGZSB6acW+ahfOpmHbcRMk/wZ7J7raCBjG02DYFaMue8s6e8eHuVY3xmvbHxSIhARPer0ZEmRjbP9RamYRb8q9PuWgRMVr8M0nZTdZ9Drh/ntCLl9U2zuhv2hHkAhTgu0iXcayq73vlDJ+MwVzDLZTPW33qk5BIM3qO98l5W6yEAHCIAeuPJsEgOMWrB/0nFRvjmjHK4K6zzzm5HW5SVgaMc29MPHc4+IVNVGHxcgWaBITvAs9jjVVOAT+30IecAe0B+6u+UJtL8wBsiacFMdD9yKBs3Dj22rNvPr2Jd0nNOhA="
-
-addons:
-  coverity_scan:
-    project:
-      name: "climactic/raptor"
-      description: "Build submitted via Travis CI"
-    notification_email: anantcp2010@gmail.com
-    build_command_prepend: "mvn clean"
-    build_command:   "mvn -DskipTests=true compile"
-    branch_pattern: master
