@@ -2,7 +2,9 @@ package org.raptor.core.nodes;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.json.JsonObject;
+import org.raptor.codecs.PingCodec;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Cluster;
@@ -13,6 +15,7 @@ import org.raptor.ui.RaptorUI;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Created by Anant on 11-07-2015.
@@ -30,8 +33,12 @@ public class AlphaNode extends AbstractVerticle {
 
     public void start() {
         try {
+
             raptorUI = new RaptorUI(vertx, this.deploymentID());
             raptorUI.start();
+
+            MessageCodec<Ping, Ping> pingCodec = new PingCodec();
+            vertx.eventBus().registerDefaultCodec(Ping.class, pingCodec);
 
             // get host name and host ip
             serverDetails = new ServerDetails(
@@ -50,12 +57,12 @@ public class AlphaNode extends AbstractVerticle {
             cluster.getBetaNode().setDeploymentId(this.deploymentID());
 
             vertx.eventBus().consumer(PING_BUS, message -> {
-                vertx.eventBus().send(this.deploymentID(), message.body());
+                vertx.eventBus().send(this.deploymentID(), json.getJsonString(message.body()));
             });
 
             // configure ping bus
             vertx.setPeriodic(PING_TIME, id -> {
-                vertx.eventBus().publish(PING_BUS, json.getJsonString(new Ping(cluster.getBetaNode(), serverDetails)));
+                vertx.eventBus().publish(PING_BUS, new Ping(cluster.getBetaNode(), serverDetails));
             });
 
             for (WorkerNode workerNode : cluster.getBetaNode().getWorkerNodes()) {

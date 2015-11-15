@@ -1,9 +1,11 @@
 package org.raptor.core.nodes.workers;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import org.raptor.codecs.PingCodec;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
 import org.raptor.model.Ping;
@@ -61,7 +63,7 @@ public class AbstractWorkerNode extends AbstractVerticle {
 
             // configure ping bus
             vertx.setPeriodic(PING_TIME, id -> {
-                vertx.eventBus().publish(PING_BUS, json.getJsonString(new Ping(workerNode, serverDetails)));
+                vertx.eventBus().publish(PING_BUS, new Ping(workerNode, serverDetails));
             });
 
             logger = LoggerFactory.getLogger(this.getClass().getName());

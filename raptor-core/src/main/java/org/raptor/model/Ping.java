@@ -14,4 +14,12 @@ public class Ping {
         this.node = node;
         this.serverDetails = serverDetails;
     }
+
+    public INode getNode() {
+        return node;
+    }
+
+    public ServerDetails getServerDetails() {
+        return serverDetails;
+    }
 }
