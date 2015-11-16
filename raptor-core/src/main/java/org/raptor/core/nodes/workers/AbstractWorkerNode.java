@@ -23,11 +23,13 @@ public class AbstractWorkerNode extends AbstractVerticle {
     protected static Logger logger;
     private final Integer PING_TIME = 1000;
     private final String PING_BUS = "PING_BUS";
-    public JsonObject config;
+
     protected IJSON json;
     protected WorkerNode workerNode;
     protected Setting setting;
     protected ServerDetails serverDetails;
+
+    public JsonObject config;
 
     public AbstractWorkerNode() {
         json = new GsonJSONImpl();
@@ -67,8 +69,7 @@ public class AbstractWorkerNode extends AbstractVerticle {
             });
 
             logger = LoggerFactory.getLogger(this.getClass().getName());
-        }catch (Exception exception)
-        {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }

@@ -14,65 +14,72 @@ public class PingCodec implements MessageCodec<Ping, Ping> {
 
     @Override
     public void encodeToWire(Buffer buffer, Ping ping) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        byte[] bytes = null;
+        byte[] bytes;
+
+        ObjectOutput objectOutput = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
         try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(ping);
-            bytes = bos.toByteArray();
-        }catch (IOException ex) {
+            objectOutput = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutput.writeObject(ping);
+
+            bytes = byteArrayOutputStream.toByteArray();
+            buffer.appendInt(bytes.length);
+            buffer.appendBytes(bytes);
+        } catch (IOException ex) {
             // ignore close exception
         } finally {
             try {
-                if (out != null) {
-                    out.close();
+                if (objectOutput != null) {
+                    objectOutput.close();
                 }
             } catch (IOException ex) {
                 // ignore close exception
             }
             try {
-                bos.close();
+                byteArrayOutputStream.close();
             } catch (IOException ex) {
                 // ignore close exception
             }
         }
-
-        buffer.appendInt(bytes.length);
-        buffer.appendBytes(bytes);
-
     }
 
     @Override
     public Ping decodeFromWire(int pos, Buffer buffer) {
+        int length;
+        byte[] bytes;
+
         Ping ping = null;
-        int length = buffer.getInt(pos);
-        pos += 4;
-        byte[] bytes = buffer.getBytes(pos, pos + length);
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        ObjectInput in = null;
+        ObjectInput objectInput = null;
+        ByteArrayInputStream byteArrayInputStream = null;
+
         try {
-            in = new ObjectInputStream(bis);
-            ping = (Ping)in.readObject();
-        }catch (IOException ex) {
+            length = buffer.getInt(pos);
+            pos += 4;
+            bytes = buffer.getBytes(pos, pos + length);
+            byteArrayInputStream = new ByteArrayInputStream(bytes);
+            objectInput = new ObjectInputStream(byteArrayInputStream);
+            ping = (Ping) objectInput.readObject();
+        } catch (IOException ex) {
             // ignore close exception
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             try {
-                bis.close();
+                if (byteArrayInputStream != null)
+                    byteArrayInputStream.close();
             } catch (IOException ex) {
                 // ignore close exception
             }
             try {
-                if (in != null) {
-                    in.close();
+                if (objectInput != null) {
+                    objectInput.close();
                 }
             } catch (IOException ex) {
                 // ignore close exception
             }
         }
-        return  ping;
+        return ping;
     }
 
     @Override
@@ -82,7 +89,7 @@ public class PingCodec implements MessageCodec<Ping, Ping> {
 
     @Override
     public String name() {
-        return "mypojoencoder2";
+        return "PING_ENCODER";
     }
 
     @Override
