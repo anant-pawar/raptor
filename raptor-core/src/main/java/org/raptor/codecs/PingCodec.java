@@ -3,6 +3,8 @@ package org.raptor.codecs;
 import io.netty.util.CharsetUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import org.raptor.model.Ping;
 
 import java.io.*;
@@ -12,6 +14,7 @@ import java.io.*;
  */
 public class PingCodec implements MessageCodec<Ping, Ping> {
     private final String NAME = "PING_ENCODER";
+    private final static Logger logger = LoggerFactory.getLogger(PingCodec.class);
 
     @Override
     public void encodeToWire(Buffer buffer, Ping ping) {
@@ -27,20 +30,20 @@ public class PingCodec implements MessageCodec<Ping, Ping> {
             bytes = byteArrayOutputStream.toByteArray();
             buffer.appendInt(bytes.length);
             buffer.appendBytes(bytes);
-        } catch (IOException ex) {
-            // ignore close exception
+        } catch (IOException ioException) {
+            logger.error(ioException.getMessage());
         } finally {
             try {
                 if (objectOutput != null) {
                     objectOutput.close();
                 }
-            } catch (IOException ex) {
-                // ignore close exception
+            } catch (IOException ioException) {
+                logger.error(ioException.getMessage());
             }
             try {
                 byteArrayOutputStream.close();
-            } catch (IOException ex) {
-                // ignore close exception
+            } catch (IOException ioException) {
+                logger.error(ioException.getMessage());
             }
         }
     }
@@ -61,23 +64,23 @@ public class PingCodec implements MessageCodec<Ping, Ping> {
             byteArrayInputStream = new ByteArrayInputStream(bytes);
             objectInput = new ObjectInputStream(byteArrayInputStream);
             ping = (Ping) objectInput.readObject();
-        } catch (IOException ex) {
-            // ignore close exception
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            logger.error(ioException.getMessage());
+        } catch (ClassNotFoundException classNotFoundException) {
+            logger.error(classNotFoundException.getMessage());
         } finally {
             try {
                 if (byteArrayInputStream != null)
                     byteArrayInputStream.close();
-            } catch (IOException ex) {
-                // ignore close exception
+            } catch (IOException ioException) {
+                logger.error(ioException.getMessage());
             }
             try {
                 if (objectInput != null) {
                     objectInput.close();
                 }
-            } catch (IOException ex) {
-                // ignore close exception
+            } catch (IOException ioException) {
+                logger.error(ioException.getMessage());
             }
         }
         return ping;

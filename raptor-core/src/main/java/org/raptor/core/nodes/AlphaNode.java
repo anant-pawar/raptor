@@ -4,6 +4,8 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import org.raptor.codecs.PingCodec;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
@@ -23,9 +25,12 @@ import java.util.Observable;
 public class AlphaNode extends AbstractVerticle {
     private final String PING_BUS = "PING_BUS";
     private final Integer PING_TIME = 1000;
-    protected ServerDetails serverDetails;
+    private final Logger logger  = LoggerFactory.getLogger(AlphaNode.class);
+
     private RaptorUI raptorUI;
     private IJSON json;
+
+    protected ServerDetails serverDetails;
 
     public AlphaNode() {
         json = new GsonJSONImpl();
@@ -84,7 +89,7 @@ public class AlphaNode extends AbstractVerticle {
             }
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error(exception.getMessage());
         }
     }
 }
