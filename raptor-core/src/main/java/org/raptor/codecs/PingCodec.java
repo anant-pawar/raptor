@@ -11,6 +11,7 @@ import java.io.*;
  * Created by Anant on 10-11-2015.
  */
 public class PingCodec implements MessageCodec<Ping, Ping> {
+    private final String NAME = "PING_ENCODER";
 
     @Override
     public void encodeToWire(Buffer buffer, Ping ping) {
@@ -89,7 +90,7 @@ public class PingCodec implements MessageCodec<Ping, Ping> {
 
     @Override
     public String name() {
-        return "PING_ENCODER";
+        return NAME;
     }
 
     @Override
