@@ -9,15 +9,11 @@ import io.vertx.core.logging.LoggerFactory;
 import org.raptor.codecs.PingCodec;
 import org.raptor.json.GsonJSONImpl;
 import org.raptor.json.IJSON;
-import org.raptor.model.Cluster;
-import org.raptor.model.Ping;
-import org.raptor.model.ServerDetails;
-import org.raptor.model.WorkerNode;
+import org.raptor.model.*;
 import org.raptor.ui.RaptorUI;
 
 import java.net.InetAddress;
-import java.util.List;
-import java.util.Observable;
+import java.util.HashMap;
 
 /**
  * Created by Anant on 11-07-2015.
@@ -29,6 +25,7 @@ public class AlphaNode extends AbstractVerticle {
 
     private RaptorUI raptorUI;
     private IJSON json;
+    private HashMap<String, Server> clusterMap = new HashMap<>();
 
     protected ServerDetails serverDetails;
 
@@ -59,10 +56,42 @@ public class AlphaNode extends AbstractVerticle {
                             .toString()
                     , Cluster.class);
 
-            cluster.getBetaNode().setDeploymentId(this.deploymentID());
+                cluster.getBetaNode().setDeploymentId(this.deploymentID());
 
             vertx.eventBus().consumer(PING_BUS, message -> {
-                vertx.eventBus().send(this.deploymentID(), json.getJsonString(message.body()));
+                rx.Observable
+                        .just(message.body())
+                        .map(pingObject -> (Ping) pingObject)
+                        .map(ping -> {
+
+                            String serverIP = ping.getServerDetails().getServerIp();
+
+                            if (!clusterMap.containsKey(serverIP))
+                                clusterMap.put(serverIP
+                                        , new Server(ping.getServerDetails().getServerIp()
+                                        , ping.getServerDetails().getServerName()));
+
+
+                            if (ping.getNode() instanceof BetaNode) {
+                                BetaNode betaNode = (BetaNode) ping.getNode();
+                                String betaId = betaNode.getDeploymentId();
+
+                                if (!clusterMap.get(serverIP).getBetaNodes().containsKey(betaId))
+                                    clusterMap.get(serverIP).getBetaNodes().put(betaId, betaNode);
+                            } else {
+                                WorkerNode workerNode = (WorkerNode) ping.getNode();
+                                String betaId = workerNode.getParentDeploymentId();
+                                String workerId = workerNode.getDeploymentId();
+
+                                if(!clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().containsKey(workerId))
+                                    clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().put(workerId, workerNode);
+                            }
+
+                            return clusterMap;
+                        })
+                        .subscribe(clustermap -> {
+                            vertx.eventBus().send(this.deploymentID(), json.getJsonString(clustermap));
+                        });
             });
 
             // configure ping bus

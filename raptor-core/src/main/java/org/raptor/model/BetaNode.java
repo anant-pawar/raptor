@@ -2,6 +2,7 @@ package org.raptor.model;
 
 import org.raptor.model.marker.INode;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,8 +11,8 @@ import java.util.List;
 public class BetaNode implements INode {
     private String name;
     private String deploymentId;
-    private String clusterKey;
     private List<WorkerNode> workerNodes;
+    private HashMap<String,WorkerNode> liveNodes = new HashMap<>();
 
     public String getName() {
         return name;
@@ -25,11 +26,11 @@ public class BetaNode implements INode {
         this.deploymentId = deploymentId;
     }
 
-    public String getClusterKey() {
-        return clusterKey;
-    }
-
     public List<WorkerNode> getWorkerNodes() {
         return workerNodes;
+    }
+
+    public HashMap<String, WorkerNode> getLiveNodes() {
+        return liveNodes;
     }
 }
