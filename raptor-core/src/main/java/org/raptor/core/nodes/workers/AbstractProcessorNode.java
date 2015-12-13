@@ -16,9 +16,7 @@ public abstract class AbstractProcessorNode extends AbstractWorkerNode {
     }
 
     public void read() {
-        vertx.eventBus().consumer(setting.getId(), message -> {
-            this.process(message);
-        });
+        vertx.eventBus().consumer(setting.getId(), this::process);
     }
 
     public abstract void process(Message message);

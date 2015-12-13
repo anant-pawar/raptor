@@ -64,12 +64,14 @@ public class AbstractWorkerNode extends AbstractVerticle {
                             setting.getConfig()));
 
             // configure ping bus
-            vertx.setPeriodic(PING_TIME, id -> {
-                vertx.eventBus().publish(PING_BUS, new Ping(workerNode, serverDetails));
-            });
+            vertx.setPeriodic(PING_TIME, this::ping);
 
         } catch (Exception exception) {
             logger.error(exception.getMessage());
         }
+    }
+
+    private void ping(Long id) {
+        vertx.eventBus().publish(PING_BUS, new Ping(workerNode, serverDetails));
     }
 }

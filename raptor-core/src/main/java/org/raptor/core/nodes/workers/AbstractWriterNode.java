@@ -8,16 +8,13 @@ import io.vertx.core.eventbus.Message;
 public abstract class AbstractWriterNode extends AbstractWorkerNode {
     public void start() {
         this.init();
-        ;
         logger.info(setting.getId());
         this.read();
 
     }
 
     public void read() {
-        vertx.eventBus().consumer(setting.getId(), message -> {
-            this.write(message);
-        });
+        vertx.eventBus().consumer(setting.getId(), this::write);
     }
 
     public abstract void write(Message message);

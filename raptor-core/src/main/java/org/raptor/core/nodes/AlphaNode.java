@@ -71,7 +71,6 @@ public class AlphaNode extends AbstractVerticle {
                                         , new Server(ping.getServerDetails().getServerIp()
                                         , ping.getServerDetails().getServerName()));
 
-
                             if (ping.getNode() instanceof BetaNode) {
                                 BetaNode betaNode = (BetaNode) ping.getNode();
                                 String betaId = betaNode.getDeploymentId();
@@ -121,4 +120,5 @@ public class AlphaNode extends AbstractVerticle {
             logger.error(exception.getMessage());
         }
     }
+
 }
