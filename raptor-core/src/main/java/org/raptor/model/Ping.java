@@ -7,19 +7,28 @@ import org.raptor.model.marker.INode;
  */
 public class Ping {
     private INode node;
-    private ServerDetails serverDetails;
+    private Server server;
 
-    public Ping(INode node, ServerDetails serverDetails)
+    public Ping(Server server)
+    {
+        this.server = server;
+    }
+
+    public Ping(INode node, Server server)
     {
         this.node = node;
-        this.serverDetails = serverDetails;
+        this.server = server;
     }
 
     public INode getNode() {
         return node;
     }
 
-    public ServerDetails getServerDetails() {
-        return serverDetails;
+    public void setNode(INode node) {
+        this.node = node;
+    }
+
+    public Server getServer() {
+        return server;
     }
 }

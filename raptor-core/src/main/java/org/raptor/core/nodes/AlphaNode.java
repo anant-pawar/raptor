@@ -18,35 +18,23 @@ import java.util.HashMap;
 /**
  * Created by Anant on 11-07-2015.
  */
-public class AlphaNode extends AbstractVerticle {
-    private final String PING_BUS = "PING_BUS";
-    private final Integer PING_TIME = 1000;
-    private final Logger logger  = LoggerFactory.getLogger(AlphaNode.class);
-
+public class AlphaNode extends Node {
     private RaptorUI raptorUI;
-    private IJSON json;
-    private HashMap<String, Server> clusterMap = new HashMap<>();
-
-    protected ServerDetails serverDetails;
+    private HashMap<String, ServerLive> clusterMap;
 
     public AlphaNode() {
-        json = new GsonJSONImpl();
+        clusterMap = new HashMap<>();
     }
 
     public void start() {
         try {
+            super.init();
 
             raptorUI = new RaptorUI(vertx, this.deploymentID());
             raptorUI.start();
 
             MessageCodec<Ping, Ping> pingCodec = new PingCodec();
             vertx.eventBus().registerDefaultCodec(Ping.class, pingCodec);
-
-            // get host name and host ip
-            serverDetails = new ServerDetails(
-                    InetAddress.getLocalHost().getHostName(),
-                    InetAddress.getLocalHost().getHostAddress()
-            );
 
             // get cluster config details
             Cluster cluster = json.getInstance(
@@ -56,7 +44,7 @@ public class AlphaNode extends AbstractVerticle {
                             .toString()
                     , Cluster.class);
 
-                cluster.getBetaNode().setDeploymentId(this.deploymentID());
+            ping.setNode(new BetaNodeLive(cluster.getBetaNode(), this.deploymentID()));
 
             vertx.eventBus().consumer(PING_BUS, message -> {
                 rx.Observable
@@ -64,15 +52,14 @@ public class AlphaNode extends AbstractVerticle {
                         .map(pingObject -> (Ping) pingObject)
                         .map(ping -> {
 
-                            String serverIP = ping.getServerDetails().getServerIp();
+                            String serverIP = ping.getServer().getServerIP();
 
                             if (!clusterMap.containsKey(serverIP))
                                 clusterMap.put(serverIP
-                                        , new Server(ping.getServerDetails().getServerIp()
-                                        , ping.getServerDetails().getServerName()));
+                                        , new ServerLive(server));
 
-                            if (ping.getNode() instanceof BetaNode) {
-                                BetaNode betaNode = (BetaNode) ping.getNode();
+                            if (ping.getNode() instanceof BetaNodeLive) {
+                                BetaNodeLive betaNode = (BetaNodeLive) ping.getNode();
                                 String betaId = betaNode.getDeploymentId();
 
                                 if (!clusterMap.get(serverIP).getBetaNodes().containsKey(betaId))
@@ -82,8 +69,9 @@ public class AlphaNode extends AbstractVerticle {
                                 String betaId = workerNode.getParentDeploymentId();
                                 String workerId = workerNode.getDeploymentId();
 
-                                if(!clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().containsKey(workerId))
-                                    clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().put(workerId, workerNode);
+                                if (clusterMap.get(serverIP).getBetaNodes().containsKey(betaId))
+                                    if (!clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().containsKey(workerId))
+                                        clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().put(workerId, workerNode);
                             }
 
                             return clusterMap;
@@ -93,22 +81,15 @@ public class AlphaNode extends AbstractVerticle {
                         });
             });
 
-            // configure ping bus
-            vertx.setPeriodic(PING_TIME, id -> {
-                vertx.eventBus().publish(PING_BUS, new Ping(cluster.getBetaNode(), serverDetails));
-            });
-
             for (WorkerNode workerNode : cluster.getBetaNode().getWorkerNodes()) {
                 workerNode.setParentName(cluster.getBetaNode().getName());
-                workerNode.setParentDeploymentId(cluster.getBetaNode().getDeploymentId());
+                workerNode.setParentDeploymentId(this.deploymentID());
 
                 DeploymentOptions deploymentOptions = new DeploymentOptions();
                 deploymentOptions.setInstances(workerNode.getInstance());
                 deploymentOptions.setWorker(workerNode.getIsWorker());
                 deploymentOptions.setConfig(
-                        new JsonObject(
-                                json.getJsonString(
-                                        workerNode)));
+                        new JsonObject(json.getJsonString(workerNode)));
 
                 vertx.deployVerticle(workerNode.getVerticle(), deploymentOptions);
 

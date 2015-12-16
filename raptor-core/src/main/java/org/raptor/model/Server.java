@@ -9,13 +9,10 @@ import java.util.List;
 public class Server {
     private String serverName;
     private String serverIP;
-    private HashMap<String,BetaNode> betaNodes;
 
-    public Server(String serverIP, String serverName)
-    {
+    public Server(String serverIP, String serverName) {
         this.serverIP = serverIP;
         this.serverName = serverName;
-        this.betaNodes = new HashMap<>();
     }
 
     public String getServerName() {
@@ -24,9 +21,5 @@ public class Server {
 
     public String getServerIP() {
         return serverIP;
-    }
-
-    public HashMap<String, BetaNode> getBetaNodes() {
-        return betaNodes;
     }
 }
