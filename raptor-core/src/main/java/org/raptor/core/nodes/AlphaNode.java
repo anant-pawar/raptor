@@ -1,18 +1,13 @@
 package org.raptor.core.nodes;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.eventbus.MessageCodec;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import org.raptor.codecs.PingCodec;
-import org.raptor.json.GsonJSONImpl;
-import org.raptor.json.IJSON;
+import org.raptor.helpers.ClusterMapper;
 import org.raptor.model.*;
+import org.raptor.startup.RegisterCodes;
 import org.raptor.ui.RaptorUI;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 
 /**
@@ -20,21 +15,26 @@ import java.util.HashMap;
  */
 public class AlphaNode extends Node {
     private RaptorUI raptorUI;
-    private HashMap<String, ServerLive> clusterMap;
+    private RegisterCodes registerCodes;
+    private BetaNodeLive betaNodeLive;
+    private ClusterMapper clusterMapper;
 
     public AlphaNode() {
-        clusterMap = new HashMap<>();
+        clusterMapper = new ClusterMapper();
+        registerCodes = new RegisterCodes();
     }
 
     public void start() {
         try {
+            // initialisation
             super.init();
 
+            // register codec
+            registerCodes.register(vertx);
+
+            // start ui
             raptorUI = new RaptorUI(vertx, this.deploymentID());
             raptorUI.start();
-
-            MessageCodec<Ping, Ping> pingCodec = new PingCodec();
-            vertx.eventBus().registerDefaultCodec(Ping.class, pingCodec);
 
             // get cluster config details
             Cluster cluster = json.getInstance(
@@ -44,54 +44,29 @@ public class AlphaNode extends Node {
                             .toString()
                     , Cluster.class);
 
-            ping.setNode(new BetaNodeLive(cluster.getBetaNode(), this.deploymentID()));
+            // construct a beta node live
+            BetaNodeLive betaNodeLive = new BetaNodeLive(cluster.getBetaNode());
+            betaNodeLive.setDeploymentId(this.deploymentID());
 
-            vertx.eventBus().consumer(PING_BUS, message -> {
-                rx.Observable
-                        .just(message.body())
-                        .map(pingObject -> (Ping) pingObject)
-                        .map(ping -> {
+            // set ping node
+            ping.setNode(betaNodeLive);
 
-                            String serverIP = ping.getServer().getServerIP();
+            // set the ping consumer
+            vertx.eventBus().consumer(PING_BUS, this::processPing);
 
-                            if (!clusterMap.containsKey(serverIP))
-                                clusterMap.put(serverIP
-                                        , new ServerLive(server));
-
-                            if (ping.getNode() instanceof BetaNodeLive) {
-                                BetaNodeLive betaNode = (BetaNodeLive) ping.getNode();
-                                String betaId = betaNode.getDeploymentId();
-
-                                if (!clusterMap.get(serverIP).getBetaNodes().containsKey(betaId))
-                                    clusterMap.get(serverIP).getBetaNodes().put(betaId, betaNode);
-                            } else {
-                                WorkerNode workerNode = (WorkerNode) ping.getNode();
-                                String betaId = workerNode.getParentDeploymentId();
-                                String workerId = workerNode.getDeploymentId();
-
-                                if (clusterMap.get(serverIP).getBetaNodes().containsKey(betaId))
-                                    if (!clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().containsKey(workerId))
-                                        clusterMap.get(serverIP).getBetaNodes().get(betaId).getLiveNodes().put(workerId, workerNode);
-                            }
-
-                            return clusterMap;
-                        })
-                        .subscribe(clustermap -> {
-                            vertx.eventBus().send(this.deploymentID(), json.getJsonString(clustermap));
-                        });
-            });
-
+            // deploy the workers
             for (WorkerNode workerNode : cluster.getBetaNode().getWorkerNodes()) {
-                workerNode.setParentName(cluster.getBetaNode().getName());
-                workerNode.setParentDeploymentId(this.deploymentID());
+                WorkerNodeLive workerNodeLive = new WorkerNodeLive(workerNode);
+                workerNodeLive.setParentName(cluster.getBetaNode().getName());
+                workerNodeLive.setParentDeploymentId(this.deploymentID());
 
                 DeploymentOptions deploymentOptions = new DeploymentOptions();
-                deploymentOptions.setInstances(workerNode.getInstance());
-                deploymentOptions.setWorker(workerNode.getIsWorker());
+                deploymentOptions.setInstances(workerNodeLive.getInstance());
+                deploymentOptions.setWorker(workerNodeLive.getIsWorker());
                 deploymentOptions.setConfig(
-                        new JsonObject(json.getJsonString(workerNode)));
+                        new JsonObject(json.getJsonString(workerNodeLive)));
 
-                vertx.deployVerticle(workerNode.getVerticle(), deploymentOptions);
+                vertx.deployVerticle(workerNodeLive.getVerticle(), deploymentOptions);
 
                 // temporary
                 Thread.sleep(1000);
@@ -100,6 +75,19 @@ public class AlphaNode extends Node {
         } catch (Exception exception) {
             logger.error(exception.getMessage());
         }
+    }
+
+    private void sendCluster(HashMap<String, ServerLive> clusterMap) {
+        vertx.eventBus().send(this.deploymentID(), json.getJsonString(clusterMap));
+    }
+
+    private void processPing(Message message) {
+        rx
+                .Observable
+                .just(message.body())
+                .map(pingObject -> (Ping) pingObject)
+                .map(clusterMapper::getUpdatedCluster)
+                .subscribe(this::sendCluster);
     }
 
 }

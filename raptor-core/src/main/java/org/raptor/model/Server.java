@@ -1,8 +1,5 @@
 package org.raptor.model;
 
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * Created by Anant on 24-11-2015.
  */

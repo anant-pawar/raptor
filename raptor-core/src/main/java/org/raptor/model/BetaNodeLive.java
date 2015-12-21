@@ -7,12 +7,11 @@ import java.util.HashMap;
  */
 public class BetaNodeLive extends BetaNode {
     private String deploymentId;
-    private HashMap<String,WorkerNode> liveNodes = new HashMap<>();
+    private HashMap<String,WorkerNodeLive> liveNodes = new HashMap<>();
 
-    public BetaNodeLive(BetaNode betaNode, String deploymentId)
+    public BetaNodeLive(BetaNode betaNode)
     {
         super(betaNode.getName(), betaNode.getWorkerNodes());
-        this.deploymentId = deploymentId;
         this.liveNodes = new HashMap<>();
     }
 
@@ -20,7 +19,11 @@ public class BetaNodeLive extends BetaNode {
         return deploymentId;
     }
 
-    public HashMap<String, WorkerNode> getLiveNodes() {
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    public HashMap<String, WorkerNodeLive> getLiveNodes() {
         return liveNodes;
     }
 }

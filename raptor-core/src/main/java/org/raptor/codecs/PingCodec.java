@@ -1,6 +1,5 @@
 package org.raptor.codecs;
 
-import io.netty.util.CharsetUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.logging.Logger;

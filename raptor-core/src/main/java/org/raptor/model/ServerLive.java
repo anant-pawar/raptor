@@ -1,7 +1,5 @@
 package org.raptor.model;
 
-import org.raptor.model.Server;
-
 import java.util.HashMap;
 
 /**

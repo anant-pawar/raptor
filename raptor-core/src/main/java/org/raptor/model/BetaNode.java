@@ -2,7 +2,6 @@ package org.raptor.model;
 
 import org.raptor.model.marker.INode;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**

@@ -9,7 +9,6 @@ import org.raptor.model.Ping;
 import org.raptor.model.Server;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Created by Anant on 13-12-2015.
@@ -45,8 +44,6 @@ public class Node extends AbstractVerticle {
 
         // register pinger
         vertx.setPeriodic(PING_TIME, this::ping);
-
-
 
     }
 

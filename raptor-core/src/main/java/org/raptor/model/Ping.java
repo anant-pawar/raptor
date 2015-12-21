@@ -14,12 +14,6 @@ public class Ping {
         this.server = server;
     }
 
-    public Ping(INode node, Server server)
-    {
-        this.node = node;
-        this.server = server;
-    }
-
     public INode getNode() {
         return node;
     }
