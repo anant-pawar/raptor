@@ -8,8 +8,12 @@ import java.util.HashMap;
 public class ServerLive extends Server {
     private HashMap<String,BetaNodeLive> betaNodes;
 
-    public ServerLive(Server server)
-    {
+    public ServerLive() {
+        super();
+        this.betaNodes = new HashMap<String, BetaNodeLive>();
+    }
+
+    public ServerLive(Server server) {
         super(server.getServerIP(),server.getServerName());
         this.betaNodes = new HashMap<>();
     }

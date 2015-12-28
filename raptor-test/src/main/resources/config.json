@@ -1,13 +1,12 @@
 {
   "betaNode": {
     "name": "beta",
-    "clusterKey": "a455a4d2-9f61-47e8-a2b1-14e0bc9ed779",
     "workerNodes": [
       {
         "name": "Processor",
         "verticle": "com.worker.DataProcessor",
+        "isWorker": true,
         "instance": 1,
-        "worker": true,
         "setting": {
           "id": "P1",
           "routes": {
@@ -18,8 +17,8 @@
       {
         "name": "Writer",
         "verticle": "com.worker.DataWriter",
+        "isWorker": true,
         "instance": 1,
-        "worker": true,
         "setting": {
           "id": "W1"
         }
@@ -27,8 +26,8 @@
       {
         "name": "Reader",
         "verticle": "com.worker.DataReader",
+        "isWorker": true,
         "instance": 1,
-        "worker": true,
         "setting": {
           "id": "R1",
           "routes": {

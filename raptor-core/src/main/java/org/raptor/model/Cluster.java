@@ -6,6 +6,10 @@ package org.raptor.model;
 public class Cluster {
     private BetaNode betaNode;
 
+    public Cluster() {
+        this.betaNode = null;
+    }
+
     public BetaNode getBetaNode() {
         return betaNode;
     }

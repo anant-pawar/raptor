@@ -9,6 +9,11 @@ public class Ping {
     private INode node;
     private Server server;
 
+    public Ping() {
+        this.setNode(null);
+        this.server = null;
+    }
+
     public Ping(Server server)
     {
         this.server = server;

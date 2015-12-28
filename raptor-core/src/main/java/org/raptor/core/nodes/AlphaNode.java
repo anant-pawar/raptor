@@ -73,7 +73,7 @@ public class AlphaNode extends Node {
             }
 
         } catch (Exception exception) {
-            logger.error(exception.getMessage());
+            logger.error(exception.getLocalizedMessage());
         }
     }
 

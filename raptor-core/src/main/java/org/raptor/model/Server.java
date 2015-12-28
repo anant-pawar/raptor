@@ -7,6 +7,11 @@ public class Server {
     private String serverName;
     private String serverIP;
 
+    public Server() {
+        this.serverName = null;
+        this.serverIP = null;
+    }
+
     public Server(String serverIP, String serverName) {
         this.serverIP = serverIP;
         this.serverName = serverName;

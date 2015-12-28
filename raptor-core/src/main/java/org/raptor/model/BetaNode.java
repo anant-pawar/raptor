@@ -2,6 +2,7 @@ package org.raptor.model;
 
 import org.raptor.model.marker.INode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +11,11 @@ import java.util.List;
 public class BetaNode implements INode {
     private String name;
     private List<WorkerNode> workerNodes;
+
+    public BetaNode() {
+        this.name = null;
+        this.workerNodes = new ArrayList<WorkerNode>();
+    }
 
     public BetaNode(String name, List<WorkerNode> workerNodes){
         this.name = name;

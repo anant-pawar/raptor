@@ -5,10 +5,10 @@ import com.google.gson.Gson;
 /**
  * Created by Anant on 18-08-2015.
  */
-public class GsonJSONImpl implements IJSON {
+public class GsonJSON implements IJSON {
     Gson gson;
 
-    public GsonJSONImpl() {
+    public GsonJSON() {
         gson = new Gson();
     }
 

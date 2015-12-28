@@ -3,8 +3,9 @@ package org.raptor.core.nodes;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import org.raptor.json.GsonJSONImpl;
+import org.raptor.json.GsonJSON;
 import org.raptor.json.IJSON;
+import org.raptor.json.JacksonJSON;
 import org.raptor.model.Ping;
 import org.raptor.model.Server;
 
@@ -25,7 +26,7 @@ public class Node extends AbstractVerticle {
 
     protected Node()
     {
-        json = new GsonJSONImpl();
+        json = new GsonJSON();
     }
 
     protected void init()

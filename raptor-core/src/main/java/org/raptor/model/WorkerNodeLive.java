@@ -8,8 +8,14 @@ public class WorkerNodeLive extends WorkerNode {
     private String parentName;
     private String parentDeploymentId;
 
-    public WorkerNodeLive(WorkerNode workerNode)
-    {
+    public WorkerNodeLive() {
+        super();
+        this.setDeploymentId(null);
+        this.setParentName(null);
+        this.setParentDeploymentId(null);
+    }
+
+    public WorkerNodeLive(WorkerNode workerNode) {
         super(workerNode);
     }
 

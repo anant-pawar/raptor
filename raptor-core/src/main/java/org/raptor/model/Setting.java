@@ -8,6 +8,12 @@ public class Setting {
     private Object config;
     private Routes routes;
 
+    public Setting() {
+        this.id = null;
+        this.config = null;
+        this.routes = null;
+    }
+
     public String getId() {
         return id;
     }

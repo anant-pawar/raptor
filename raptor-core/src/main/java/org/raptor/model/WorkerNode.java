@@ -1,5 +1,6 @@
 package org.raptor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.raptor.model.marker.INode;
 
 /**
@@ -9,14 +10,22 @@ public class WorkerNode implements INode {
     private String name;
     private String verticle;
     private Integer instance;
-    private Boolean worker;
+    private Boolean isWorker;
     private Object setting;
+
+    public WorkerNode() {
+        this.name = null;
+        this.verticle = null;
+        this.instance = 1;
+        this.isWorker = true;
+        this.setting = null;
+    }
 
     public WorkerNode(WorkerNode workerNode){
         this.name = workerNode.name;
         this.verticle = workerNode.verticle;
         this.instance = workerNode.instance;
-        this.worker = workerNode.worker;
+        this.isWorker = workerNode.isWorker;
         this.setting = workerNode.setting;
     }
 
@@ -25,7 +34,7 @@ public class WorkerNode implements INode {
     }
 
     public Boolean getIsWorker() {
-        return worker;
+        return isWorker;
     }
 
     public String getVerticle() {
